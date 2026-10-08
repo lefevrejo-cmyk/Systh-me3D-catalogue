@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>Système3D V7.6</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f4f6;color:#111827}
+header{background:#111827;color:#fff;padding:16px;text-align:center}
+header h1{margin:0;font-size:22px} header p{margin:5px 0 0;color:#d1d5db;font-size:13px}
+nav{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;background:#1f2937;padding:6px;position:sticky;top:0;z-index:5}
+nav button{border:0;background:#374151;color:#fff;padding:11px 4px;border-radius:8px;font-size:11px}
+nav button.active{background:#fff;color:#111827;font-weight:bold}
+main{max-width:700px;margin:auto;padding:12px}
+.page{display:none}.page.active{display:block}
+.card{background:#fff;border-radius:14px;padding:15px;margin-bottom:12px;box-shadow:0 2px 8px #00000012}
+h2{font-size:18px;margin:0 0 12px}
+label{display:block;font-size:13px;font-weight:bold;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:9px;font-size:16px;background:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button.primary{width:100%;padding:14px;border:0;border-radius:10px;background:#2563eb;color:#fff;font-weight:bold;font-size:17px;margin-top:12px}
+button.secondary{padding:10px 12px;border:0;border-radius:8px;background:#e5e7eb;color:#111827}
+.result{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.kpi{padding:12px;border-radius:10px;background:#f9fafb;border:1px solid #e5e7eb}
+.kpi b{display:block;font-size:18px;margin-top:3px}
+.big{grid-column:1/-1;background:#ecfdf5;border-color:#a7f3d0}
+.big b{font-size:25px}
+.small{font-size:12px;color:#6b7280}
+.ok{color:#047857;font-weight:bold}.danger{color:#b91c1c;font-weight:bold}
+.item{border:1px solid #e5e7eb;border-radius:10px;padding:10px;margin:8px 0}
+.catalog-card{border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin:9px 0;background:#fff}
+.catalog-title{font-size:17px;font-weight:bold;margin-bottom:4px}
+.catalog-photo{width:100%;max-height:220px;object-fit:contain;border-radius:10px;margin-bottom:9px;background:#f3f4f6}
+.showcase-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.showcase-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 3px 12px #00000014;border:1px solid #e5e7eb}
+.showcase-card img{width:100%;height:220px;object-fit:contain;background:#f3f4f6;display:block}
+.showcase-noimg{height:220px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;font-size:42px}
+.showcase-body{padding:11px}
+.showcase-name{font-size:16px;font-weight:bold}
+.showcase-type{font-size:12px;color:#6b7280;margin:3px 0 7px}
+.showcase-price{font-size:17px;font-weight:bold}
+.showcase-desc{font-size:12px;color:#6b7280;margin-top:5px;line-height:1.35}
+.feature-star{float:right}
+@media(max-width:420px){.showcase-grid{grid-template-columns:1fr}}
+.photo-thumb{width:90px;height:90px;object-fit:cover;border-radius:10px;vertical-align:middle;margin-right:8px}
+.catalog-meta{font-size:13px;color:#6b7280;line-height:1.5}
+.catalog-profit{font-weight:bold;margin-top:6px}
+textarea{resize:vertical}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+hr{border:0;border-top:1px solid #e5e7eb;margin:14px 0}
+.qrbox{margin-top:14px;background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px;text-align:center}.qrbox img{width:min(320px,85vw);height:auto;background:#fff;border-radius:8px}.qrbox p{margin:10px 0 0}</style>
+</head>
+<body>
+<header><h1>🛠️ Système3D</h1><p>Gestion & catalogue — V7.7</p></header>
+
+<nav>
+<button data-page="calc" class="active">🧮<br>Calcul</button>
+<button data-page="history">📋<br>Historique</button>
+<button data-page="settings">⚙️<br>Paramètres</button>
+<button data-page="catalog">📦<br>Catalogue</button>
+<button data-page="showcase">✨<br>Vitrine</button>
+<button data-page="clientCatalog">🛍️<br>Client</button>
+</nav>
+
+<main>
+<section id="calc" class="page active">
+<div class="card">
+<h2>🧮 Calcul du prix</h2>
+<div class="grid">
+<div><label>Poids (g)</label><input id="weight" type="number" inputmode="decimal" value="100"></div>
+<div><label>Durée impression (h)</label><input id="hours" type="number" inputmode="decimal" value="2"></div>
+</div>
+<label>Matière</label>
+<select id="material">
+<option value="PLA">PLA</option><option value="PETG">PETG</option><option value="ABS">ABS</option><option value="ASA">ASA</option>
+</select>
+<div class="grid">
+<div><label>Prix matière (€/kg)</label><input id="filPrice" type="number" inputmode="decimal" value="20"></div>
+<div><label>Quantité</label><input id="qty" type="number" inputmode="decimal" value="1"></div>
+</div>
+<div class="grid">
+<div><label>Temps de main-d'œuvre (h)</label><input id="laborHours" type="number" inputmode="decimal" value="0"></div>
+<div><label>Temps création (h)</label><input id="designHours" type="number" inputmode="decimal" value="0"></div>
+</div>
+<div class="grid">
+<div><label>Emballage (€ / pièce)</label><input id="pack" type="number" inputmode="decimal" value="0"></div>
+<div><label>Autres frais (€ / pièce)</label><input id="other" type="number" inputmode="decimal" value="0"></div>
+</div>
+<div class="grid">
+<div><label>Personnalisation (€ / pièce)</label><input id="custom" type="number" inputmode="decimal" value="0"></div>
+<div><label>Prix de vente (€ / pièce)</label><input id="sale" type="number" inputmode="decimal" value="0"></div>
+</div>
+<div class="grid">
+<div><label>Nom du projet</label><input id="projectName" type="text" placeholder="Ex. Support téléphone"></div>
+<div><label>Type</label><select id="projectType"><option>Impression 3D</option><option>Laser</option><option>Autre</option></select></div>
+</div>
+<label>Photo de la création (optionnel)</label>
+<input id="calcPhoto" type="file" accept="image/*">
+<p id="calcPhotoPreview" class="small">Aucune photo sélectionnée.</p>
+<button id="calculate" class="primary">🧮 CALCULER</button>
+</div>
+
+<div id="results" class="card">
+<h2>📊 Résultat</h2>
+<div class="result">
+<div class="kpi"><span>Coût matière</span><b id="rFil">—</b></div>
+<div class="kpi"><span>Électricité</span><b id="rElec">—</b></div>
+<div class="kpi"><span>Abonnement</span><b id="rSub">—</b></div>
+<div class="kpi"><span>Usure machine</span><b id="rWear">—</b></div>
+<div class="kpi"><span>Main-d'œuvre</span><b id="rLabor">—</b></div>
+<div class="kpi"><span>Création</span><b id="rDesign">—</b></div>
+<div class="kpi"><span>Frais</span><b id="rFees">—</b></div>
+<div class="kpi"><span>Coût total</span><b id="rTotal">—</b></div>
+<div class="kpi big"><span>Coût / pièce</span><b id="rPiece">—</b></div>
+<div class="kpi"><span>Prix minimum ×1,5</span><b id="rMin">—</b></div>
+<div class="kpi"><span>Prix conseillé ×2</span><b id="rRec">—</b></div>
+<div class="kpi"><span>Prix premium ×2,75</span><b id="rPrem">—</b></div>
+<div class="kpi"><span>Bénéfice / pièce</span><b id="rProfit">—</b></div>
+<div class="kpi"><span>Marge</span><b id="rMargin">—</b></div>
+</div>
+<p id="status" class="small">Entre tes valeurs puis appuie sur CALCULER.</p>
+<button id="addCalcToCatalog" class="primary">📦 AJOUTER CETTE CRÉATION AU CATALOGUE</button>
+</div>
+</section>
+
+<section id="history" class="page"><div class="card"><h2>📋 Historique des créations</h2>
+<p class="small">Chaque nouvelle création enregistre maintenant tous les paramètres nécessaires pour retrouver exactement le même calcul avec « Reprendre ».</p>
+<div class="row">
+<button id="exportHistory" class="secondary">⬇️ Sauvegarder l'historique</button>
+<button id="importHistory" class="secondary">⬆️ Restaurer l'historique</button>
+<input id="historyFile" type="file" accept=".json,application/json" style="display:none">
+<button id="clearHistory" class="secondary">🗑️ Effacer tout</button>
+</div>
+<p id="historyStatus" class="small"></p>
+<hr><div id="historyList"><p class="small">Aucun calcul sauvegardé.</p></div></div></section>
+
+<section id="settings" class="page"><div class="card">
+<h2>⚙️ Paramètres</h2>
+<label>Électricité (€/kWh)</label><input id="sElec" type="number" step="0.01" value="0.22">
+<label>Abonnement mensuel (€)</label><input id="sSub" type="number" step="0.01" value="24">
+<label>Heures machine / mois</label><input id="sMonth" type="number" value="100">
+<label>Usure machine (€/h)</label><input id="sWear" type="number" step="0.01" value="0.20">
+<label>Main-d'œuvre (€/h)</label><input id="sLabor" type="number" step="0.01" value="20">
+<label>Création (€/h)</label><input id="sDesign" type="number" step="0.01" value="30">
+<hr>
+<h2>🧵 Prix matières par défaut</h2>
+<div class="grid">
+<div><label>PLA (€/kg)</label><input id="sPLA" type="number" step="0.01" value="20"></div>
+<div><label>PETG (€/kg)</label><input id="sPETG" type="number" step="0.01" value="22"></div>
+<div><label>ABS (€/kg)</label><input id="sABS" type="number" step="0.01" value="21"></div>
+<div><label>ASA (€/kg)</label><input id="sASA" type="number" step="0.01" value="27.50"></div>
+</div>
+<button id="saveSettings" class="primary">💾 ENREGISTRER</button>
+<hr>
+<h2>💾 Sauvegarde complète</h2>
+<p class="small">La sauvegarde contient tes paramètres et ton historique. Garde le fichier sur ton téléphone ou dans ton cloud.</p>
+<div class="row">
+<button id="exportBackup" class="secondary">⬇️ Exporter une sauvegarde</button>
+<button id="importBackup" class="secondary">⬆️ Importer une sauvegarde</button>
+<input id="backupFile" type="file" accept=".json,application/json" style="display:none">
+</div>
+<p id="backupStatus" class="small"></p>
+<p id="settingsStatus" class="small"></p>
+</div></section>
+
+<section id="catalog" class="page">
+<div class="card">
+<h2>📦 Catalogue</h2>
+<p class="small">Gère tes créations vendables séparément de l'historique des calculs.</p>
+<div class="grid">
+<div><label>Nom du produit</label><input id="catName" type="text" placeholder="Ex. Petit dragon"></div>
+<div><label>Catégorie</label><select id="catType"><option>Impression 3D</option><option>Laser</option><option>Autre</option></select></div>
+</div>
+<div class="grid">
+<div><label>Prix de vente (€)</label><input id="catPrice" type="number" step="0.01" inputmode="decimal" value="0"></div>
+<div><label>Coût réel (€)</label><input id="catCost" type="number" step="0.01" inputmode="decimal" value="0"></div>
+</div>
+<div class="grid">
+<div><label>Stock</label><input id="catStock" type="number" inputmode="numeric" value="0"></div>
+<div><label>Déjà vendu</label><input id="catSold" type="number" inputmode="numeric" value="0"></div>
+</div>
+<label>Photo du produit</label>
+<input id="catPhoto" type="file" accept="image/*">
+<p id="photoPreview" class="small">Aucune photo sélectionnée.</p>
+<label>Notes internes</label>
+<textarea id="catNotes" rows="3" placeholder="Dimensions, matière, variante... (non visibles par le client)"></textarea>
+<label>Description client</label>
+<textarea id="catClientDesc" rows="3" placeholder="Texte qui sera visible uniquement dans le catalogue client..."></textarea>
+<button id="addCatalog" class="primary">➕ AJOUTER AU CATALOGUE</button>
+<p id="catStatus" class="small"></p>
+</div>
+<div class="card">
+<h2>📊 Résumé</h2>
+<div class="result">
+<div class="kpi"><span>Produits</span><b id="catCount">0</b></div>
+<div class="kpi"><span>Stock total</span><b id="catStockTotal">0</b></div>
+<div class="kpi"><span>Vendus</span><b id="catSoldTotal">0</b></div>
+<div class="kpi"><span>Valeur du stock</span><b id="catStockValue">0.00 €</b></div>
+</div>
+</div>
+<div class="card">
+<h2>🛍️ Mes créations</h2>
+<div id="catalogList"><p class="small">Aucun produit dans le catalogue.</p></div>
+</div>
+</section>
+
+<section id="clientCatalog" class="page">
+<div class="card client-head">
+<h2>🛍️ Catalogue client</h2>
+<p class="small">Cette vue est destinée à tes clients : uniquement photo, nom, prix et descriptif.</p>
+<div class="grid">
+<div><label>Recherche</label><input id="clientSearch" type="text" placeholder="Rechercher une création"></div>
+<div><label>Catégorie</label><select id="clientFilter"><option value="Toutes">Toutes</option><option>Impression 3D</option><option>Laser</option><option>Autre</option></select></div>
+</div>
+<button id="shareClientCatalog" class="primary">📤 PARTAGER LE CATALOGUE CLIENT</button>
+<p id="shareClientStatus" class="small"></p>
+<hr>
+<h3>📲 QR Code du catalogue</h3>
+<p class="small">Le QR code pointe vers une adresse Internet publique de ton catalogue client. Une fois ton lien configuré, tu peux l'imprimer sur une ardoise ou un présentoir et le conserver même si tu modifies le contenu du catalogue.</p>
+<label>Lien public du catalogue</label>
+<input id="clientCatalogUrl" type="url" placeholder="https://...">
+<div class="row">
+<button id="generateClientQR" class="primary">📲 Générer le QR Code</button>
+<button id="copyClientUrl">🔗 Copier le lien</button>
+<button id="openClientUrl">🌐 Ouvrir</button>
+</div>
+<div id="clientQRBox" class="qrbox" style="display:none">
+<img id="clientQR" alt="QR Code du catalogue client">
+<p id="clientQRStatus" class="small"></p>
+</div>
+</div>
+<div id="clientCatalogGrid" class="showcase-grid"></div>
+</section>
+
+<section id="showcase" class="page">
+<div class="card showcase-head">
+<h2>✨ Vitrine Système3D</h2>
+<p class="small">Une présentation simple et élégante de tes créations.</p>
+<div class="grid">
+<div><label>Filtrer par catégorie</label><select id="showFilter">
+<option value="Toutes">Toutes</option><option value="Impression 3D">Impression 3D</option><option value="Laser">Laser</option><option value="Autre">Autre</option>
+</select></div>
+<div><label>Recherche</label><input id="showSearch" type="text" placeholder="Rechercher une création"></div>
+</div>
+<label class="row" style="align-items:center;font-weight:normal">
+<input id="showFeaturedOnly" type="checkbox" style="width:auto"> Afficher uniquement les créations mises en avant
+</label>
+</div>
+<div id="showcaseGrid" class="showcase-grid"></div>
+</section>
+</main>
+
+<script>
+(function(){
+"use strict";
+
+var defaultSettings={elec:0.22,sub:24,month:100,wear:0.20,labor:20,design:30,PLA:20,PETG:22,ABS:21,ASA:27.50};
+var settings=Object.assign({},defaultSettings);
+var history=[];
+var SETTINGS_KEY="systeme3d_settings_v66";
+var HISTORY_KEY="systeme3d_history_v69";
+
+function saveSettingsNow(){
+  try{
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  }catch(e){}
+}
+function loadSettingsNow(){
+  try{
+    var raw=localStorage.getItem(SETTINGS_KEY);
+    if(raw){
+      var saved=JSON.parse(raw);
+      if(saved && typeof saved==="object"){
+        settings=Object.assign({},defaultSettings,saved);
+      }
+    }
+  }catch(e){
+    settings=Object.assign({},defaultSettings);
+  }
+}
+
+function n(id){
+  var el=document.getElementById(id);
+  var v=parseFloat(el.value);
+  return isFinite(v)?v:0;
+}
+function money(v){ return (Math.round(v*100)/100).toFixed(2)+" €"; }
+function pct(v){ return (Math.round(v*10)/10).toFixed(1)+" %"; }
+function esc(v){
+  return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function currentSettingsFromUI(){
+  return {
+    elec:n("sElec"),sub:n("sSub"),month:Math.max(1,n("sMonth")),
+    wear:n("sWear"),labor:n("sLabor"),design:n("sDesign"),
+    PLA:n("sPLA"),PETG:n("sPETG"),ABS:n("sABS"),ASA:n("sASA")
+  };
+}
+function downloadText(filename,text){
+  var blob=new Blob([text],{type:"application/json;charset=utf-8"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+}
+function exportBackup(){
+  settings=currentSettingsFromUI();
+  saveSettingsNow();
+  var data={
+    app:"Systeme3D",
+    version:"6.7",
+    exportedAt:new Date().toISOString(),
+    settings:settings,
+    history:history
+  };
+  downloadText("Systeme3D_sauvegarde.json",JSON.stringify(data,null,2));
+  document.getElementById("backupStatus").textContent="Sauvegarde exportée ✓";
+  document.getElementById("backupStatus").className="small ok";
+}
+function importBackupFile(file){
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    try{
+      var data=JSON.parse(reader.result);
+      if(!data || typeof data!=="object") throw new Error("format");
+      if(data.settings && typeof data.settings==="object"){
+        settings=Object.assign({},defaultSettings,data.settings);
+        saveSettingsNow();
+      }
+      if(Array.isArray(data.history)){
+        history=data.history;
+        localStorage.setItem(HISTORY_KEY,JSON.stringify(history));
+      }
+      // Refresh visible settings.
+      document.getElementById("sElec").value=settings.elec;
+      document.getElementById("sSub").value=settings.sub;
+      document.getElementById("sMonth").value=settings.month;
+      document.getElementById("sWear").value=settings.wear;
+      document.getElementById("sLabor").value=settings.labor;
+      document.getElementById("sDesign").value=settings.design;
+      document.getElementById("sPLA").value=settings.PLA;
+      document.getElementById("sPETG").value=settings.PETG;
+      document.getElementById("sABS").value=settings.ABS;
+      document.getElementById("sASA").value=settings.ASA;
+      document.getElementById("filPrice").value=settings[document.getElementById("material").value]||20;
+      renderHistory();
+      calculate(false);
+      document.getElementById("backupStatus").textContent="Sauvegarde importée ✓";
+      document.getElementById("backupStatus").className="small ok";
+    }catch(e){
+      document.getElementById("backupStatus").textContent="Fichier de sauvegarde invalide.";
+      document.getElementById("backupStatus").className="small danger";
+    }
+  };
+  reader.readAsText(file);
+}
+
+var CATALOG_KEY="systeme3d_catalog_v71";
+var catalog=[];
+function saveCatalog(){
+  try{localStorage.setItem(CATALOG_KEY,JSON.stringify(catalog));}catch(e){}
+}
+function loadCatalog(){
+  try{
+    var raw=localStorage.getItem(CATALOG_KEY);
+    var data=JSON.parse(raw||"[]");
+    catalog=Array.isArray(data)?data:[];
+  }catch(e){catalog=[];}
+}
+function catalogMoney(v){return money(Number(v)||0);}
+function renderCatalog(){
+  var list=document.getElementById("catalogList");
+  document.getElementById("catCount").textContent=catalog.length;
+  document.getElementById("catStockTotal").textContent=catalog.reduce(function(a,x){return a+(Number(x.stock)||0);},0);
+  document.getElementById("catSoldTotal").textContent=catalog.reduce(function(a,x){return a+(Number(x.sold)||0);},0);
+  document.getElementById("catStockValue").textContent=catalogMoney(catalog.reduce(function(a,x){return a+(Number(x.price)||0)*(Number(x.stock)||0);},0));
+  if(!catalog.length){list.innerHTML='<p class="small">Aucun produit dans le catalogue.</p>';return;}
+  list.innerHTML=catalog.map(function(x,i){
+    var profit=(Number(x.price)||0)-(Number(x.cost)||0);
+    return '<div class="catalog-card">'+
+      (x.photo?'<img class="catalog-photo" src="'+x.photo+'" alt="Photo de '+esc(x.name||"produit")+'">':'')+
+      '<div class="catalog-title">'+esc(x.name||"Produit sans nom")+'</div>'+
+      '<div class="catalog-meta">'+esc(x.type||"Autre")+' · Stock : <b>'+Number(x.stock||0)+'</b> · Vendus : <b>'+Number(x.sold||0)+'</b></div>'+
+      '<div>Prix : <b>'+catalogMoney(x.price)+'</b> · Coût : <b>'+catalogMoney(x.cost)+'</b></div>'+
+      '<div class="catalog-profit">Marge brute : '+catalogMoney(profit)+' / pièce</div>'+
+      (x.notes?'<div class="catalog-meta">📝 '+esc(x.notes)+'</div>':'')+
+      '<div class="row" style="margin-top:8px">'+
+      '<button class="secondary" data-sell="'+i+'">💶 Vendre 1</button>'+
+      '<button class="secondary" data-stock="'+i+'">➕ Stock +1</button>'+
+      '<button class="secondary" data-featurecat="'+i+'">'+(x.featured?'⭐ Retirer vitrine':'☆ Mettre en vitrine')+'</button>'+
+      '<button class="secondary" data-clientcat="'+i+'">'+(x.clientVisible?'🛍️ Masquer client':'🛍️ Afficher client')+'</button>'+
+      '<button class="secondary" data-editcat="'+i+'">✏️ Modifier</button>'+
+      '<button class="secondary" data-delcat="'+i+'">🗑️ Supprimer</button>'+
+      '</div></div>';
+  }).join("");
+  list.querySelectorAll("[data-sell]").forEach(function(btn){
+    btn.onclick=function(){
+      var i=parseInt(btn.getAttribute("data-sell"),10), x=catalog[i];
+      if(!x)return;
+      if(Number(x.stock||0)<=0){alert("Stock insuffisant.");return;}
+      x.stock=Number(x.stock||0)-1;
+      x.sold=Number(x.sold||0)+1;
+      saveCatalog();renderCatalog();renderShowcase();
+    };
+  });
+  list.querySelectorAll("[data-stock]").forEach(function(btn){
+    btn.onclick=function(){
+      var i=parseInt(btn.getAttribute("data-stock"),10), x=catalog[i];
+      if(!x)return;
+      x.stock=Number(x.stock||0)+1;
+      saveCatalog();renderCatalog();renderShowcase();
+    };
+  });
+  list.querySelectorAll("[data-editcat]").forEach(function(btn){
+    btn.onclick=function(){
+      var i=parseInt(btn.getAttribute("data-editcat"),10), x=catalog[i];
+      if(!x)return;
+      document.getElementById("catName").value=x.name||"";
+      document.getElementById("catType").value=x.type||"Impression 3D";
+      document.getElementById("catPrice").value=x.price||0;
+      document.getElementById("catCost").value=x.cost||0;
+      document.getElementById("catStock").value=x.stock||0;
+      document.getElementById("catSold").value=x.sold||0;
+      document.getElementById("catNotes").value=x.notes||"";
+      document.getElementById("catClientDesc").value=x.clientDesc||"";
+      pendingPhoto="";
+      showPhotoPreview(x.photo||"");
+      document.getElementById("addCatalog").textContent="💾 ENREGISTRER LA MODIFICATION";
+      document.getElementById("addCatalog").setAttribute("data-editing",String(i));
+      document.getElementById("catStatus").textContent="Modification du produit sélectionné.";
+    };
+  });
+  list.querySelectorAll("[data-featurecat]").forEach(function(btn){
+    btn.onclick=function(){
+      var i=parseInt(btn.getAttribute("data-featurecat"),10), x=catalog[i];
+      if(!x)return;
+      x.featured=!x.featured;
+      saveCatalog();renderCatalog();renderShowcase();
+    };
+  });
+  list.querySelectorAll("[data-clientcat]").forEach(function(btn){
+    btn.onclick=function(){
+      var i=parseInt(btn.getAttribute("data-clientcat"),10), x=catalog[i];
+      if(!x)return;
+      x.clientVisible=!x.clientVisible;
+      saveCatalog();renderCatalog();renderClientCatalog();
+    };
+  });
+  list.querySelectorAll("[data-delcat]").forEach(function(btn){
+    btn.onclick=function(){
+      var i=parseInt(btn.getAttribute("data-delcat"),10);
+      if(confirm("Supprimer ce produit du catalogue ?")){
+        catalog.splice(i,1);saveCatalog();renderCatalog();renderShowcase();
+      }
+    };
+  });
+}
+var pendingPhoto="";
+function compressPhoto(file, callback){
+  if(!file){callback("");return;}
+  var reader=new FileReader();
+  reader.onload=function(){
+    var img=new Image();
+    img.onload=function(){
+      var max=900, scale=Math.min(1,max/Math.max(img.width,img.height));
+      var canvas=document.createElement("canvas");
+      canvas.width=Math.max(1,Math.round(img.width*scale));
+      canvas.height=Math.max(1,Math.round(img.height*scale));
+      var ctx=canvas.getContext("2d");
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      callback(canvas.toDataURL("image/jpeg",0.75));
+    };
+    img.onerror=function(){callback("");};
+    img.src=reader.result;
+  };
+  reader.onerror=function(){callback("");};
+  reader.readAsDataURL(file);
+}
+function showPhotoPreview(data){
+  var p=document.getElementById("photoPreview");
+  if(data){
+    p.innerHTML='<img class="photo-thumb" src="'+data+'" alt="Aperçu"> Photo prête à être enregistrée.';
+  }else{
+    p.textContent="Aucune photo sélectionnée.";
+  }
+}
+
+function renderClientCatalog(){
+  var grid=document.getElementById("clientCatalogGrid");
+  if(!grid)return;
+  var filter=document.getElementById("clientFilter").value;
+  var search=document.getElementById("clientSearch").value.trim().toLowerCase();
+  var items=catalog.filter(function(x){
+    if(!x.clientVisible)return false;
+    var okType=filter==="Toutes" || (x.type||"Autre")===filter;
+    var hay=((x.name||"")+" "+(x.notes||"")).toLowerCase();
+    return okType && (!search || hay.indexOf(search)>=0);
+  });
+  if(!items.length){
+    grid.innerHTML='<div class="card" style="grid-column:1/-1"><p class="small">Aucune création publiée dans le catalogue client.</p></div>';
+    return;
+  }
+  grid.innerHTML=items.map(function(x){
+    return '<div class="showcase-card">'+
+      (x.photo?'<img src="'+x.photo+'" alt="Photo de '+esc(x.name||"création")+'">':'<div class="showcase-noimg">🛠️</div>')+
+      '<div class="showcase-body">'+
+      '<div class="showcase-name">'+esc(x.name||"Création")+'</div>'+
+      '<div class="showcase-price">'+money(Number(x.price)||0)+'</div>'+
+      (x.clientDesc?'<div class="showcase-desc">'+esc(x.clientDesc)+'</div>':'')+
+      '</div></div>';
+  }).join("");
+}
+
+function getClientItems(){
+  return catalog.filter(function(x){ return !!x.clientVisible; }).map(function(x){
+    return {
+      name:x.name||"Création",
+      price:Number(x.price)||0,
+      description:x.clientDesc||"",
+      photo:x.photo||""
+    };
+  });
+}
+
+function buildClientCatalogHTML(){
+  var items=getClientItems();
+  var cards=items.map(function(x){
+    var photo=x.photo ? '<img src="'+x.photo+'" alt="">' : '<div class="noimg">🛠️</div>';
+    var desc=x.description ? '<div class="desc">'+esc(x.description)+'</div>' : '';
+    return '<article class="card">'+photo+'<div class="body"><div class="name">'+esc(x.name)+'</div><div class="price">'+money(x.price)+'</div>'+desc+'</div></article>';
+  }).join('');
+  if(!cards) cards='<div class="empty">Aucune création n’est actuellement proposée.</div>';
+  return `<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>Catalogue client — Système3D</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f4f6;color:#111827}
+header{background:#111827;color:#fff;padding:22px 16px;text-align:center}header h1{margin:0;font-size:24px}header p{margin:6px 0 0;color:#d1d5db;font-size:13px}
+main{max-width:900px;margin:auto;padding:16px}.intro{background:#fff;border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px #00000012}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 3px 12px #00000014;border:1px solid #e5e7eb}
+.card img{width:100%;height:280px;object-fit:contain;background:#f3f4f6;display:block}.noimg{height:280px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;font-size:48px}
+.body{padding:14px}.name{font-size:18px;font-weight:bold}.price{font-size:19px;font-weight:bold;margin-top:6px}.desc{font-size:13px;color:#6b7280;line-height:1.45;margin-top:7px}
+.empty{background:#fff;border-radius:14px;padding:20px;text-align:center;color:#6b7280}footer{text-align:center;color:#9ca3af;font-size:11px;padding:20px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.card img,.noimg{height:300px}}
+</style>
+</head>
+<body>
+<header><h1>🛍️ Système3D</h1><p>Catalogue client</p></header>
+<main>
+<div class="intro"><h2 style="margin:0 0 8px">✨ Nos créations</h2><div style="color:#6b7280;font-size:14px">Découvrez nos créations disponibles.</div></div>
+<div class="grid">${cards}</div>
+</main>
+<footer>Catalogue présenté par Système3D</footer>
+</body>
+</html>`;
+}
+
+async function shareClientCatalog(){
+  var items=getClientItems();
+  var status=document.getElementById("shareClientStatus");
+  if(!items.length){
+    alert("Aucune création n'est actuellement affichée au client. Active d'abord « Afficher client » dans ton catalogue privé.");
+    return;
+  }
+  var html=buildClientCatalogHTML();
+  var blob=new Blob([html],{type:"text/html;charset=utf-8"});
+  var file=new File([blob],"Catalogue_Client_Systeme3D.html",{type:"text/html"});
+  try{
+    if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
+      await navigator.share({title:"Catalogue client Système3D",text:"Catalogue client Système3D",files:[file]});
+      status.textContent="Catalogue client prêt à être partagé ✓";
+      status.className="small ok";
+      return;
+    }
+  }catch(e){
+    if(e && e.name==="AbortError") return;
+  }
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");a.href=url;a.download="Catalogue_Client_Systeme3D.html";document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},1500);
+  status.textContent="Le catalogue client a été créé. Il est prêt à être envoyé depuis tes téléchargements ✓";
+  status.className="small ok";
+}
+
+function saveClientCatalogUrl(){
+  var v=document.getElementById("clientCatalogUrl").value.trim();
+  try{localStorage.setItem("systeme3d_client_catalog_url",v);}catch(e){}
+}
+
+function loadClientCatalogUrl(){
+  var v="";
+  try{v=localStorage.getItem("systeme3d_client_catalog_url")||"";}catch(e){}
+  document.getElementById("clientCatalogUrl").value=v;
+}
+
+function getClientCatalogUrl(){
+  var input=document.getElementById("clientCatalogUrl");
+  var v=input.value.trim();
+  if(!/^https?:\/\//i.test(v)){
+    alert("Entre d'abord un lien Internet public commençant par https://");
+    return "";
+  }
+  saveClientCatalogUrl();
+  return v;
+}
+
+function generateClientQR(){
+  var url=getClientCatalogUrl();
+  if(!url)return;
+  var box=document.getElementById("clientQRBox");
+  var img=document.getElementById("clientQR");
+  var status=document.getElementById("clientQRStatus");
+  img.src="https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=12&data="+encodeURIComponent(url);
+  box.style.display="block";
+  status.textContent="QR Code prêt. Scanne-le avec un autre téléphone pour vérifier le lien.";
+  status.className="small ok";
+}
+
+async function copyClientUrl(){
+  var url=getClientCatalogUrl();
+  if(!url)return;
+  try{
+    await navigator.clipboard.writeText(url);
+    alert("Lien copié ✓");
+  }catch(e){
+    var input=document.getElementById("clientCatalogUrl");
+    input.focus(); input.select();
+    alert("Sélectionne le lien puis copie-le.");
+  }
+}
+
+function openClientUrl(){
+  var url=getClientCatalogUrl();
+  if(url) window.open(url,"_blank");
+}
+
+function renderShowcase(){
+  var grid=document.getElementById("showcaseGrid");
+  if(!grid)return;
+  var filter=document.getElementById("showFilter").value;
+  var search=document.getElementById("showSearch").value.trim().toLowerCase();
+  var featuredOnly=document.getElementById("showFeaturedOnly").checked;
+  var items=catalog.filter(function(x){
+    var okType=filter==="Toutes" || (x.type||"Autre")===filter;
+    var okSearch=!search || ((x.name||"").toLowerCase().indexOf(search)>=0 || (x.notes||"").toLowerCase().indexOf(search)>=0);
+    var okFeatured=!featuredOnly || !!x.featured;
+    return okType && okSearch && okFeatured;
+  });
+  if(!items.length){
+    grid.innerHTML='<div class="card" style="grid-column:1/-1"><p class="small">Aucune création à afficher dans la vitrine.</p></div>';
+    return;
+  }
+  grid.innerHTML=items.map(function(x){
+    return '<div class="showcase-card">'+
+      (x.photo?'<img src="'+x.photo+'" alt="Photo de '+esc(x.name||"création")+'">':'<div class="showcase-noimg">🛠️</div>')+
+      '<div class="showcase-body">'+
+      '<span class="feature-star">'+(x.featured?'⭐':'')+'</span>'+
+      '<div class="showcase-name">'+esc(x.name||"Création")+'</div>'+
+      '<div class="showcase-type">'+esc(x.type||"Autre")+'</div>'+
+      '<div class="showcase-price">'+money(Number(x.price)||0)+'</div>'+
+      (x.notes?'<div class="showcase-desc">'+esc(x.notes)+'</div>':'')+
+      '</div></div>';
+  }).join("");
+}
+
+function clearCatalogForm(){
+  document.getElementById("catName").value="";
+  document.getElementById("catType").value="Impression 3D";
+  document.getElementById("catPrice").value=0;
+  document.getElementById("catCost").value=0;
+  document.getElementById("catStock").value=0;
+  document.getElementById("catSold").value=0;
+  document.getElementById("catNotes").value="";
+  document.getElementById("catClientDesc").value="";
+  pendingPhoto="";
+  document.getElementById("catPhoto").value="";
+  showPhotoPreview("");
+  document.getElementById("addCatalog").textContent="➕ AJOUTER AU CATALOGUE";
+  document.getElementById("addCatalog").removeAttribute("data-editing");
+}
+
+function load(){
+  try{
+    loadSettingsNow();
+    var h=JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]");
+    if(Array.isArray(h)) history=h;
+  }catch(e){}
+  document.getElementById("sElec").value=settings.elec;
+  document.getElementById("sSub").value=settings.sub;
+  document.getElementById("sMonth").value=settings.month;
+  document.getElementById("sWear").value=settings.wear;
+  document.getElementById("sLabor").value=settings.labor;
+  document.getElementById("sDesign").value=settings.design;
+  document.getElementById("sPLA").value=settings.PLA;
+  document.getElementById("sPETG").value=settings.PETG;
+  document.getElementById("sABS").value=settings.ABS;
+  document.getElementById("sASA").value=settings.ASA;
+  document.getElementById("filPrice").value=settings[document.getElementById("material").value] || 20;
+  document.getElementById("settingsStatus").textContent="Paramètres chargés ✓";
+  document.getElementById("settingsStatus").className="small ok";
+  renderHistory();
+}
+
+var calcPhotoData="";
+function loadImageAsData(file, callback){
+  if(!file){callback("");return;}
+  var reader=new FileReader();
+  reader.onload=function(){
+    var img=new Image();
+    img.onload=function(){
+      var max=900, scale=Math.min(1,max/Math.max(img.width,img.height));
+      var canvas=document.createElement("canvas");
+      canvas.width=Math.max(1,Math.round(img.width*scale));
+      canvas.height=Math.max(1,Math.round(img.height*scale));
+      var ctx=canvas.getContext("2d");
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      callback(canvas.toDataURL("image/jpeg",0.75));
+    };
+    img.onerror=function(){callback("");};
+    img.src=reader.result;
+  };
+  reader.onerror=function(){callback("");};
+  reader.readAsDataURL(file);
+}
+function showCalcPhoto(data){
+  var p=document.getElementById("calcPhotoPreview");
+  if(data) p.innerHTML='<img class="photo-thumb" src="'+data+'" alt="Aperçu"> Photo prête à être transférée.';
+  else p.textContent="Aucune photo sélectionnée.";
+}
+
+function calculate(saveIt){
+  var weight=n("weight"), hours=n("hours"), qty=Math.max(1,n("qty"));
+  var filPrice=n("filPrice"), laborHours=n("laborHours"), designHours=n("designHours");
+  var pack=n("pack"), other=n("other"), custom=n("custom"), sale=n("sale");
+  var mat=document.getElementById("material").value;
+
+  var cons={PLA:0.25,PETG:0.30,ABS:0.45,ASA:0.40}[mat]||0.25;
+  var fil=weight/1000*filPrice*qty;
+  var elec=hours*cons*settings.elec*qty;
+  var sub=hours*(settings.sub/Math.max(1,settings.month))*qty;
+  var wear=hours*settings.wear*qty;
+  var labor=laborHours*settings.labor*qty;
+  var design=designHours*settings.design*qty;
+  var fees=(pack+other+custom)*qty;
+  var total=fil+elec+sub+wear+labor+design+fees;
+  var piece=total/qty;
+  var min=piece*1.5, rec=piece*2, prem=piece*2.75;
+  var profit=sale>0?sale-piece:0;
+  var margin=sale>0?(profit/sale*100):0;
+
+  document.getElementById("rFil").textContent=money(fil);
+  document.getElementById("rElec").textContent=money(elec);
+  document.getElementById("rSub").textContent=money(sub);
+  document.getElementById("rWear").textContent=money(wear);
+  document.getElementById("rLabor").textContent=money(labor);
+  document.getElementById("rDesign").textContent=money(design);
+  document.getElementById("rFees").textContent=money(fees);
+  document.getElementById("rTotal").textContent=money(total);
+  document.getElementById("rPiece").textContent=money(piece);
+  document.getElementById("rMin").textContent=money(min);
+  document.getElementById("rRec").textContent=money(rec);
+  document.getElementById("rPrem").textContent=money(prem);
+  document.getElementById("rProfit").textContent=sale>0?money(profit):"—";
+  document.getElementById("rMargin").textContent=sale>0?pct(margin):"—";
+  document.getElementById("status").textContent="Calcul effectué ✓";
+  document.getElementById("status").className="small ok";
+
+  if(saveIt){
+    history.unshift({
+      date:new Date().toLocaleString("fr-FR"),
+      name:document.getElementById("projectName").value.trim() || "Projet sans nom",
+      type:document.getElementById("projectType").value,
+      material:mat,
+      weight:weight,
+      hours:hours,
+      qty:qty,
+      filPrice:filPrice,
+      laborHours:laborHours,
+      designHours:designHours,
+      pack:pack,
+      other:other,
+      custom:custom,
+      sale:sale,
+      photo:calcPhotoData,
+      piece:piece,
+      min:min,
+      rec:rec,
+      prem:prem
+    });
+    history=history.slice(0,100);
+    try{localStorage.setItem(HISTORY_KEY,JSON.stringify(history));}catch(e){}
+    renderHistory();
+  }
+}
+
+function exportHistory(){
+  var data={
+    app:"Systeme3D",
+    type:"history",
+    version:"6.8",
+    exportedAt:new Date().toISOString(),
+    history:history
+  };
+  downloadText("Systeme3D_historique_creations.json",JSON.stringify(data,null,2));
+  document.getElementById("historyStatus").textContent="Historique sauvegardé ✓";
+  document.getElementById("historyStatus").className="small ok";
+}
+function importHistoryFile(file){
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    try{
+      var data=JSON.parse(reader.result);
+      var imported=Array.isArray(data)?data:data.history;
+      if(!Array.isArray(imported)) throw new Error("format");
+      history=imported;
+      try{localStorage.setItem(HISTORY_KEY,JSON.stringify(history));}catch(e){}
+      renderHistory();
+      document.getElementById("historyStatus").textContent=history.length+" création(s) restaurée(s) ✓";
+      document.getElementById("historyStatus").className="small ok";
+    }catch(e){
+      document.getElementById("historyStatus").textContent="Fichier d'historique invalide.";
+      document.getElementById("historyStatus").className="small danger";
+    }
+  };
+  reader.readAsText(file);
+}
+
+function renderHistory(){
+  var box=document.getElementById("historyList");
+  if(!history.length){box.innerHTML='<p class="small">Aucun calcul sauvegardé.</p>';return;}
+  box.innerHTML=history.map(function(x,i){
+    return '<div class="item"><b>'+esc(x.name||"Projet sans nom")+'</b><br>'+
+      '<span class="small">'+esc(x.type||"Impression 3D")+' · '+esc(x.material||"")+' · '+x.weight+' g · '+x.hours+' h · '+x.qty+' pièce(s)</span><br>'+
+      '<span class="small">'+esc(x.date||"")+'</span><br>'+
+      'Coût/pièce : <b>'+money(x.piece)+'</b> · Conseillé : <b>'+money(x.rec)+'</b>'+
+      (x.sale>0?' · Vente : <b>'+money(x.sale)+'</b>':'')+
+      '<div class="row"><button class="secondary" data-load="'+i+'">Reprendre</button><button class="secondary" data-del="'+i+'">Supprimer</button></div></div>';
+  }).join("");
+  box.querySelectorAll("[data-load]").forEach(function(btn){
+    btn.onclick=function(){
+      var x=history[parseInt(btn.getAttribute("data-load"),10)];
+      if(!x) return;
+      document.getElementById("projectName").value=x.name||"";
+      document.getElementById("projectType").value=x.type||"Impression 3D";
+      document.getElementById("material").value=x.material||"PLA";
+      document.getElementById("weight").value=x.weight!=null?x.weight:0;
+      document.getElementById("hours").value=x.hours!=null?x.hours:0;
+      document.getElementById("qty").value=x.qty!=null?x.qty:1;
+      document.getElementById("filPrice").value=x.filPrice!=null?x.filPrice:(settings[x.material]||20);
+      document.getElementById("laborHours").value=x.laborHours!=null?x.laborHours:0;
+      document.getElementById("designHours").value=x.designHours!=null?x.designHours:0;
+      document.getElementById("pack").value=x.pack!=null?x.pack:0;
+      document.getElementById("other").value=x.other!=null?x.other:0;
+      document.getElementById("custom").value=x.custom!=null?x.custom:0;
+      document.getElementById("sale").value=x.sale!=null?x.sale:0;
+      calcPhotoData=x.photo||"";
+      document.getElementById("calcPhoto").value="";
+      showCalcPhoto(calcPhotoData);
+      document.querySelector('nav button[data-page="calc"]').click();
+      calculate(false);
+    };
+  });
+  box.querySelectorAll("[data-del]").forEach(function(btn){
+    btn.onclick=function(){
+      history.splice(parseInt(btn.getAttribute("data-del"),10),1);
+      try{localStorage.setItem(HISTORY_KEY,JSON.stringify(history));}catch(e){}
+      renderHistory();
+    };
+  });
+}
+
+document.querySelectorAll("nav button").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    document.querySelectorAll("nav button").forEach(function(b){b.classList.remove("active");});
+    document.querySelectorAll(".page").forEach(function(p){p.classList.remove("active");});
+    btn.classList.add("active");
+    var page=document.getElementById(btn.getAttribute("data-page"));
+    if(page) page.classList.add("active");
+    if(btn.getAttribute("data-page")==="showcase") renderShowcase();
+    if(btn.getAttribute("data-page")==="clientCatalog") renderClientCatalog();
+  });
+});
+
+document.getElementById("clientCatalogUrl").addEventListener("input",saveClientCatalogUrl);
+document.getElementById("generateClientQR").addEventListener("click",generateClientQR);
+document.getElementById("copyClientUrl").addEventListener("click",copyClientUrl);
+document.getElementById("openClientUrl").addEventListener("click",openClientUrl);
+loadClientCatalogUrl();
+
+document.getElementById("calculate").addEventListener("click",function(){calculate(true);});
+document.querySelectorAll("#calc input,#calc select").forEach(function(el){
+  el.addEventListener("input",function(){ calculate(false); });
+  el.addEventListener("change",function(){
+    if(el.id==="material"){
+      var p=settings[el.value];
+      if(isFinite(p)) document.getElementById("filPrice").value=p;
+    }
+    calculate(false);
+  });
+});
+
+document.getElementById("exportHistory").addEventListener("click",exportHistory);
+document.getElementById("importHistory").addEventListener("click",function(){
+  document.getElementById("historyFile").click();
+});
+document.getElementById("historyFile").addEventListener("change",function(){
+  importHistoryFile(this.files[0]);
+  this.value="";
+});
+
+document.getElementById("calcPhoto").addEventListener("change",function(){
+  var file=this.files[0];
+  if(!file){calcPhotoData="";showCalcPhoto("");return;}
+  loadImageAsData(file,function(data){
+    calcPhotoData=data;
+    showCalcPhoto(data);
+  });
+});
+
+document.getElementById("catPhoto").addEventListener("change",function(){
+  var file=this.files[0];
+  if(!file){pendingPhoto="";showPhotoPreview("");return;}
+  compressPhoto(file,function(data){
+    pendingPhoto=data;
+    showPhotoPreview(data);
+  });
+});
+
+document.getElementById("showFilter").addEventListener("change",renderShowcase);
+document.getElementById("showSearch").addEventListener("input",renderShowcase);
+document.getElementById("showFeaturedOnly").addEventListener("change",renderShowcase);
+document.getElementById("clientFilter").addEventListener("change",renderClientCatalog);
+document.getElementById("clientSearch").addEventListener("input",renderClientCatalog);
+document.getElementById("shareClientCatalog").addEventListener("click",shareClientCatalog);
+
+document.getElementById("addCalcToCatalog").addEventListener("click",function(){
+  var name=document.getElementById("projectName").value.trim();
+  if(!name) name="Création sans nom";
+  document.getElementById("catName").value=name;
+  document.getElementById("catType").value=document.getElementById("projectType").value;
+  document.getElementById("catPrice").value=n("sale")>0?n("sale"):Number(document.getElementById("rRec").textContent.replace(" €","").replace(",","."));
+  document.getElementById("catCost").value=Number(document.getElementById("rPiece").textContent.replace(" €","").replace(",","."));
+  document.getElementById("catStock").value=1;
+  document.getElementById("catSold").value=0;
+  document.getElementById("catNotes").value="Calcul : "+document.getElementById("material").value+" · "+n("weight")+" g · "+n("hours")+" h";
+  document.getElementById("catClientDesc").value="";
+  document.getElementById("catPhoto").value="";
+  pendingPhoto=calcPhotoData||"";
+  showPhotoPreview(pendingPhoto);
+  document.getElementById("addCatalog").textContent="➕ AJOUTER AU CATALOGUE";
+  document.getElementById("addCatalog").removeAttribute("data-editing");
+  document.querySelector('nav button[data-page="catalog"]').click();
+  document.getElementById("catStatus").textContent="Création transférée depuis le calcul ✓ Vérifie les informations puis ajoute-la au catalogue.";
+  document.getElementById("catStatus").className="small ok";
+});
+
+document.getElementById("addCatalog").addEventListener("click",function(){
+  var name=document.getElementById("catName").value.trim();
+  if(!name){alert("Indique un nom de produit.");return;}
+  var obj={
+    name:name,
+    type:document.getElementById("catType").value,
+    price:n("catPrice"),
+    cost:n("catCost"),
+    stock:Math.max(0,Math.floor(n("catStock"))),
+    sold:Math.max(0,Math.floor(n("catSold"))),
+    notes:document.getElementById("catNotes").value.trim(),
+    clientDesc:document.getElementById("catClientDesc").value.trim(),
+    photo:pendingPhoto || "",
+    featured:false,
+    clientVisible:false
+  };
+  var edit=this.getAttribute("data-editing");
+  if(edit!==null){
+    var editIndex=parseInt(edit,10);
+    if(catalog[editIndex] && catalog[editIndex].featured) obj.featured=true;
+    if(catalog[editIndex] && catalog[editIndex].clientVisible) obj.clientVisible=true;
+    if(!pendingPhoto && catalog[editIndex] && catalog[editIndex].photo) obj.photo=catalog[editIndex].photo;
+    catalog[editIndex]=obj;
+    document.getElementById("catStatus").textContent="Produit modifié ✓";
+  }
+  else {catalog.unshift(obj);document.getElementById("catStatus").textContent="Produit ajouté ✓";}
+  document.getElementById("catStatus").className="small ok";
+  saveCatalog();renderCatalog();renderShowcase();clearCatalogForm();
+});
+
+document.getElementById("clearHistory").addEventListener("click",function(){
+  if(!history.length) return;
+  if(confirm("Effacer tout l'historique ?")){
+    history=[];
+    try{localStorage.removeItem(HISTORY_KEY);}catch(e){}
+    renderHistory();
+  }
+});
+
+document.querySelectorAll("#settings input").forEach(function(el){
+  el.addEventListener("input",function(){
+    settings={
+      elec:n("sElec"),sub:n("sSub"),month:Math.max(1,n("sMonth")),
+      wear:n("sWear"),labor:n("sLabor"),design:n("sDesign"),
+      PLA:n("sPLA"),PETG:n("sPETG"),ABS:n("sABS"),ASA:n("sASA")
+    };
+    saveSettingsNow();
+  });
+});
+
+document.getElementById("exportBackup").addEventListener("click",exportBackup);
+document.getElementById("importBackup").addEventListener("click",function(){
+  document.getElementById("backupFile").click();
+});
+document.getElementById("backupFile").addEventListener("change",function(){
+  importBackupFile(this.files[0]);
+  this.value="";
+});
+
+document.getElementById("saveSettings").addEventListener("click",function(){
+  settings={
+    elec:n("sElec"),sub:n("sSub"),month:Math.max(1,n("sMonth")),
+    wear:n("sWear"),labor:n("sLabor"),design:n("sDesign"),
+    PLA:n("sPLA"),PETG:n("sPETG"),ABS:n("sABS"),ASA:n("sASA")
+  };
+  saveSettingsNow();
+  document.getElementById("settingsStatus").textContent="Paramètres enregistrés ✓";
+  document.getElementById("settingsStatus").className="small ok";
+  calculate(false);
+});
+
+load();
+loadCatalog();
+renderCatalog();
+renderShowcase();
+renderClientCatalog();
+calculate(false);
+})();
+</script>
+</body>
+</html>
